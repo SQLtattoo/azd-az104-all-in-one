@@ -2,6 +2,8 @@
 
 This repository contains infrastructure as code (Bicep) to deploy a comprehensive environment for Azure Administrator (AZ-104) training and demonstrations.
 
+This scenario is part of the broader Azure Demo Catalog, available at [Trainer-Demo-Deploy](https://aka.ms/trainer-demo-deploy).
+
 ## Pre-deployment Steps
 
 1. **Find your Object ID**:
