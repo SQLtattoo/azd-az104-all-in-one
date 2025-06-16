@@ -39,6 +39,14 @@ azd init -t sqltattoo/azd-az104-all-in-one
 ```
 azd up
 ```
+
+## 3. Done? Remove it from your subscription
+```
+azd down --purge --force 
+```
+
+**Note**: check that the recovery services vault has been removed as it could be resisting if it has been used and needs to be removed manually by its removal script.
+
 ## Demo Features
 Check the **[demo guide](https://github.com/SQLtattoo/azd-az104-all-in-one/blob/master/demoguide/demoguide.md)** for details on the demo scenario.
 
