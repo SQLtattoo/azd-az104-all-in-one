@@ -1,0 +1,47 @@
+# azd environment files
+.env
+azd.env
+.azure
+.azdo
+*.azcli
+
+# Local state and config
+*.log
+*.tmp
+*.bak
+*.swp
+
+# VSCode
+.vscode/
+
+# Windows junk
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS junk
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node (if you ever add a frontend)
+node_modules/
+dist/
+build/
+
+# Python virtual env (if any automation scripts)
+.venv/
+__pycache__/
+
+# Sensitive or temporary files
+*.ps1
+*.sh
+*.pem
+*.key
+*.crt
+*.json
+*.pfx
+*.cer
+*.csv
+
+/scripts/---*
