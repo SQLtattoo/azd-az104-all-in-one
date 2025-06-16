@@ -40,7 +40,7 @@ azd init -t sqltattoo/azd-az104-all-in-one
 azd up
 ```
 ## Demo Features
-Check the **[demo guide](https://raw.githubusercontent.com/sqltattoo/azd-az104-all-in-one/refs/heads/main/demoguide/demoguide.md)** for details on the demo scenario.
+Check the **[demo guide](https://github.com/SQLtattoo/azd-az104-all-in-one/blob/master/demoguide/demoguide.md)** for details on the demo scenario.
 
 ## Troubleshooting
 
