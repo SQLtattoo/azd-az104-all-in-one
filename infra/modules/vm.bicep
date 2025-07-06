@@ -118,7 +118,7 @@ resource iisExtension 'Microsoft.Compute/virtualMachines/extensions@2021-07-01'=
     autoUpgradeMinorVersion: true
     protectedSettings: {
       fileUris: [
-        'https://raw.githubusercontent.com/SQLtattoo/az104demoenv/refs/heads/main/scripts/installIIS.ps1'
+        'https://raw.githubusercontent.com/SQLtattoo/azd-az104-all-in-one/refs/heads/master/scripts/installIIS.ps1'
       ]
       commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File installIIS.ps1'
     }
