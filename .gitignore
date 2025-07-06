@@ -34,7 +34,6 @@ build/
 __pycache__/
 
 # Sensitive or temporary files
-*.ps1
 *.sh
 *.pem
 *.key
