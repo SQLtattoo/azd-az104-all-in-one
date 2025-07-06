@@ -43,5 +43,3 @@ __pycache__/
 *.pfx
 *.cer
 *.csv
-
-/scripts/---*
