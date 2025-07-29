@@ -34,68 +34,7 @@ resource workloadVnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = 
 // Get subnet reference
 var subnetRef = '${workloadVnet.id}/subnets/${subnetName}'
 
-// Create NIC for VM
-resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
-  name: '${vmName}-nic'
-  location: location
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        properties: {
-          subnet: {
-            id: subnetRef
-          }
-          privateIPAllocationMethod: 'Dynamic'
-          loadBalancerBackendAddressPools: [
-            {
-              id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', lbName, 'WorkloadPool')
-            }
-          ]
-        }
-      }
-    ]
-  }
-}
-
-// Create the VM
-resource vm 'Microsoft.Compute/virtualMachines@2021-07-01' = {
-  name: vmName
-  location: location
-  properties: {
-    hardwareProfile: {
-      vmSize: 'Standard_B2ms'
-    }
-    storageProfile: {
-      imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2019-Datacenter'
-        version: 'latest'
-      }
-      osDisk: {
-        createOption: 'FromImage'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-    }
-    osProfile: {
-      computerName: vmName
-      adminUsername: adminUsername
-      adminPassword: adminPassword
-    }
-    networkProfile: {
-      networkInterfaces: [
-        {
-          id: nic.id
-        }
-      ]
-    }
-  }
-}
-
-// Create a private Load Balancer
+// Create a private Load Balancer FIRST
 resource privateLB 'Microsoft.Network/loadBalancers@2021-05-01' = {
   name: lbName
   location: location
@@ -151,6 +90,67 @@ resource privateLB 'Microsoft.Network/loadBalancers@2021-05-01' = {
           numberOfProbes: 2
         }
       }
+    ]
+  }
+}
+
+// Create NIC for VM AFTER load balancer exists
+resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
+  name: '${vmName}-nic'
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          subnet: {
+            id: subnetRef
+          }
+          privateIPAllocationMethod: 'Dynamic'
+          loadBalancerBackendAddressPools: [
+            {
+              id: privateLB.properties.backendAddressPools[0].id
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+// Create the VM
+resource vm 'Microsoft.Compute/virtualMachines@2021-07-01' = {
+  name: vmName
+  location: location
+  properties: {
+    hardwareProfile: {
+      vmSize: 'Standard_B2ms'
+    }
+    storageProfile: {
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2019-Datacenter'
+        version: 'latest'
+      }
+      osDisk: {
+        createOption: 'FromImage'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+    }
+    osProfile: {
+      computerName: vmName
+      adminUsername: adminUsername
+      adminPassword: adminPassword
+    }
+    networkProfile: {
+      networkInterfaces: [
+        {
+          id: nic.id
+        }
+      ]
     ]
   }
 }
@@ -277,7 +277,8 @@ resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
     ]
   }
 }
- */
+*/
+
 // Outputs
 output vmId string = vm.id
 output lbId string = privateLB.id
