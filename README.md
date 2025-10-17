@@ -2,8 +2,6 @@
 
 This repository contains infrastructure as code (Bicep) to deploy a comprehensive environment for Azure Administrator (AZ-104) training and demonstrations.
 
-This scenario is part of the broader Azure Demo Catalog, available at [Trainer-Demo-Deploy](https://aka.ms/trainer-demo-deploy).
-
 ## Pre-deployment Steps
 
 1. **Find your Object ID**:
@@ -41,19 +39,45 @@ azd init -t sqltattoo/azd-az104-all-in-one
 ```
 azd up
 ```
-
-## 3. Done? Remove it from your subscription
-```
-azd down --purge --force 
-```
-
-**Note**: check that the recovery services vault has been removed as it could be resisting if it has been used and needs to be removed manually by its removal script.
-
 ## Demo Features
-Check the **[demo guide](https://github.com/SQLtattoo/azd-az104-all-in-one/blob/master/demoguide/demoguide.md)** for details on the demo scenario.
+Check the **[demo guide](https://raw.githubusercontent.com/sqltattoo/azd-az104-all-in-one/refs/heads/main/demoguide/demoguide.md)** for details on the demo scenario.
+
+## Cleanup for Previous Deployments
+
+**Important Note (Updated: October 17, 2025)**
+
+If you deployed this solution **before October 17, 2025**, you may encounter deployment errors when redeploying to a different Azure region. This is due to a static subscription-scoped governance deployment that was location-bound.
+
+### Symptoms
+You'll see an error like:
+```
+InvalidDeploymentLocation: The deployment 'governance-components' already exists in location 'uksouth'.
+```
+
+### Solution
+Before running `azd up` in a new region, delete the old subscription-scoped deployment:
+
+```bash
+# Delete the static governance deployment (one-time cleanup)
+az deployment sub delete --name governance-components
+
+# Optional: List and clean up custom roles if starting fresh
+az role definition list --custom-role-only true --query "[?contains(roleName, 'AZ104')]"
+
+# Optional: List policy assignments for review
+az policy assignment list --query "[?contains(displayName, 'AZ104')]"
+```
+
+After cleanup, proceed with normal deployment:
+```bash
+azd up
+```
+
+**What changed:** The governance deployment now uses a dynamic name based on your hub location (e.g., `governance-westeurope`), allowing multi-region deployments without conflicts.
 
 ## Troubleshooting
 
 - Key Vault deployment fails: Verify your Object ID is correct and that you have sufficient permissions
 - Custom RBAC role not visible: It may take a few minutes for the role to appear in the Azure Portal
 - Monitoring agent failures: Ensure VMs are fully provisioned before deploying monitoring
+- Location conflicts: See the "Cleanup for Previous Deployments" section above

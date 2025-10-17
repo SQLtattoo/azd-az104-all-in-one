@@ -73,18 +73,6 @@ var keyVaultTags = {
   SecurityControl: 'ignore'
 }
 
-// Debug the Key Vault deployment with more descriptive name and output
-resource debugKeyVaultDeployment 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (deployKeyVault) {
-  name: 'debug-keyvault-params'
-  location: location
-  kind: 'AzureCLI'
-  properties: {
-    azCliVersion: '2.45.0'
-    retentionInterval: 'P1D'
-    scriptContent: 'echo "Key Vault deployment attempted with deployKeyVault=${deployKeyVault}, adminObjectId=${adminObjectId}"'
-  }
-}
-
 // Key Vault for customer-managed keys - renamed to be clearer
 resource keyVaultResource 'Microsoft.KeyVault/vaults@2022-07-01' = if (deployKeyVault) {
   name: 'kv-az104-${uniqueString(resourceGroup().id)}'
@@ -151,6 +139,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     minimumTlsVersion: 'TLS1_2'
     allowBlobPublicAccess: false
     supportsHttpsTrafficOnly: true
+    allowSharedKeyAccess: true // Changed to true to allow shared key access
     encryption: {
       keySource: enableCmkForStorage && deployKeyVault ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
       keyvaultproperties: enableCmkForStorage && deployKeyVault ? {

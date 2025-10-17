@@ -116,11 +116,13 @@ resource iisExtension 'Microsoft.Compute/virtualMachines/extensions@2021-07-01'=
     type: 'CustomScriptExtension'
     typeHandlerVersion: '1.10'
     autoUpgradeMinorVersion: true
+    settings: {
+      fileUris: []
+    }
     protectedSettings: {
-      fileUris: [
-        'https://raw.githubusercontent.com/SQLtattoo/azd-az104-all-in-one/refs/heads/master/scripts/installIIS.ps1'
-      ]
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File installIIS.ps1'
+      commandToExecute: !empty(customWebContent) 
+        ? 'powershell -ExecutionPolicy Unrestricted -Command "Install-WindowsFeature -Name Web-Server -IncludeManagementTools; Remove-Item -Path C:\\inetpub\\wwwroot\\iisstart.htm -Force -ErrorAction SilentlyContinue; Set-Content -Path C:\\inetpub\\wwwroot\\default.htm -Value \'${customWebContent}\'"'
+        : 'powershell -ExecutionPolicy Unrestricted -Command "Install-WindowsFeature -Name Web-Server -IncludeManagementTools; Remove-Item -Path C:\\inetpub\\wwwroot\\iisstart.htm -Force -ErrorAction SilentlyContinue; Set-Content -Path C:\\inetpub\\wwwroot\\default.htm -Value \'<h1>Hello from ${vmName}!</h1><p>Server: ${vmName}</p><p>Location: ${location}</p><p>Deployment Time: $(Get-Date)</p>\'"'
     }
   }
 }

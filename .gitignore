@@ -24,16 +24,9 @@ Desktop.ini
 .AppleDouble
 .LSOverride
 
-# Node (if you ever add a frontend)
-node_modules/
-dist/
-build/
-
-# Python virtual env (if any automation scripts)
-.venv/
-__pycache__/
 
 # Sensitive or temporary files
+*.ps1
 *.sh
 *.pem
 *.key
@@ -42,3 +35,5 @@ __pycache__/
 *.pfx
 *.cer
 *.csv
+
+scripts/*

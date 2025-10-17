@@ -216,7 +216,7 @@ module vmss 'vmss.bicep' = {
 
 // Deploy governance components conditionally
 module governance 'governance.bicep' = {
-  name: 'governance-components'
+  name: 'governance-${hubLocation}'
   scope: subscription()
   params: {
     resourceGroupName: resourceGroup().name
