@@ -46,7 +46,4 @@ resource bastionHost 'Microsoft.Network/bastionHosts@2021-05-01' = {
       }
     ]
   }
-  dependsOn: [
-    bastionPIP
-  ]
 }
