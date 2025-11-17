@@ -5,23 +5,7 @@ infra:
   provider: bicep   # (default; you can omit this line)
   path: infra       # relative path to all your .bicep files
   module: main      # the single entry-point .bicep file
-  parameters:
-    # Define your locations consistently
-    hubLocation: "uksouth"
-    spoke1Location: "uksouth"
-    spoke2Location: "northeurope" 
-    workloadLocation: "uksouth" 
-    # Add admin credentials
-    adminUsername: "azadmin"
-    # Other parameters as needed
-    deployBastion: true
-    deployVpnGateway: true
-    deployKeyVault: true
+  # Note: Runtime parameters have been moved to infra/main.parameters.json
+  # See README.md "Configuration" section for details on customizing your deployment
 
-    # DNS and naming parameters
-    publicDnsZoneBase: "contoso.com"
-    privateDnsZoneBase: "contoso.local"
-    vaultName: "contoso-rsv"
-    storageAccountPrefix: "staz104"
-    adminObjectId: "" #use: az ad signed-in-user show --query id -o tsv
     

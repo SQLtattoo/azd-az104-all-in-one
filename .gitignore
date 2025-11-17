@@ -31,9 +31,11 @@ Desktop.ini
 *.pem
 *.key
 *.crt
-*.json
 *.pfx
 *.cer
 *.csv
+
+# Allow Bicep parameter files
+!infra/*.json
 
 scripts/*
