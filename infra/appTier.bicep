@@ -31,6 +31,9 @@ param adminUsername string
 @description('Admin password for VMs')
 param adminPassword string
 
+@description('VM size for app tier VMs')
+param vmSize string = 'Standard_B2s'
+
 // Reference the spoke2 VNet
 resource spoke2Vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: vnetName
@@ -80,7 +83,7 @@ resource vms 'Microsoft.Compute/virtualMachines@2021-07-01' = [for (vm, i) in vm
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_B2s'
+      vmSize: vmSize
     }
     storageProfile: {
       imageReference: {

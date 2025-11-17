@@ -30,6 +30,9 @@ param adminPassword string
 @description('Admin username for the VMs')
 param adminUsername string
 
+@description('VM size for web tier VMs')
+param vmSize string = 'Standard_B2ms'
+
 // Define tags directly to avoid the module reference calculation error
 param tags object = {
   environment: 'demo'
@@ -39,7 +42,6 @@ param tags object = {
 // Define SKUs directly rather than using module outputs
 var lbSku = 'Standard'
 var pipSku = 'Standard'
-var vmSize = 'Standard_B2ms'
 
 // 1️⃣ Reference the spoke VNet
 resource spoke1Vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {

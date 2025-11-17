@@ -4,14 +4,8 @@ This repository contains infrastructure as code (Bicep) to deploy a comprehensiv
 
 ## Pre-deployment Steps
 
-1. **Find your Object ID**:
-   Before deploying, you must add your Azure AD Object ID to the `azure.yaml` file:
-   
-   ```bash
-   az ad signed-in-user show --query id -o tsv
-   ```
-   
-   Copy the output and paste it as the value for `adminObjectId` in `azure.yaml`.
+1. **Configure deployment parameters** (optional):
+   Before deploying, you can customize the deployment by editing `infra/main.parameters.json`. See the "Configuration" section below for details.
 
 2. **Verify subscription access**:
    - Ensure you have Owner or Contributor access to the subscription
@@ -39,8 +33,83 @@ azd init -t sqltattoo/azd-az104-all-in-one
 ```
 azd up
 ```
+
+**Optional:** If you need to force a redeployment or explicitly pass the parameter file:
+```bash
+azd up --force  # Force redeployment even if no changes detected
+
+# Or explicitly reference the parameter file:
+azd deploy --parameters @infra/main.parameters.json
+```
 ## Demo Features
 Check the **[demo guide](https://raw.githubusercontent.com/sqltattoo/azd-az104-all-in-one/refs/heads/main/demoguide/demoguide.md)** for details on the demo scenario.
+
+## Configuration
+
+**Updated: November 17, 2025**
+
+### Parameter File Approach
+
+All deployment configuration is managed through the Bicep parameters file `infra/main.parameters.json`. This provides predictable, consistent behavior across all deployments.
+
+**Why we moved from `azure.yaml` to a parameter file:**
+- The `infra.parameters` section in `azure.yaml` did not reliably control runtime deployments
+- Changes to feature toggles (like `deployBastion`, `deployVpnGateway`) and VM sizes were not consistently applied
+- A standard ARM/Bicep parameter file ensures Azure Resource Manager processes parameters correctly every time
+
+### Customizing Your Deployment
+
+Edit `infra/main.parameters.json` before running `azd up`. Key parameters you can customize:
+
+**Locations:**
+```json
+"hubLocation": { "value": "uksouth" },
+"spoke1Location": { "value": "westeurope" },
+"spoke2Location": { "value": "northeurope" },
+"workloadLocation": { "value": "uksouth" }
+```
+
+**Feature Toggles:**
+```json
+"deployBastion": { "value": false },      // Set to false to skip Bastion (saves cost/quota)
+"deployVpnGateway": { "value": false },   // Set to false to skip VPN Gateway
+"deployKeyVault": { "value": true }       // Enable/disable Key Vault demos
+```
+
+**VM Size Configuration:**
+
+Control VM sizes for cost optimization or quota constraints:
+
+```json
+"defaultVmSize": { "value": "Standard_B2s" },        // Default for all tiers
+"webTierVmSize": { "value": "" },                   // Empty = use default
+"appTierVmSize": { "value": "Standard_B4ms" },      // Override for app tier only
+"workloadTierVmSize": { "value": "" },              // Empty = use default
+"vmssVmSize": { "value": "Standard_B2s" }           // VMSS instance size
+```
+
+**Example: Low-quota environment**
+```json
+"defaultVmSize": { "value": "Standard_B1s" },
+"deployBastion": { "value": false },
+"deployVpnGateway": { "value": false }
+```
+
+**Naming and DNS:**
+```json
+"publicDnsZoneBase": { "value": "contoso.com" },
+"privateDnsZoneBase": { "value": "contoso.local" },
+"vaultName": { "value": "contoso-rsv" },
+"storageAccountPrefix": { "value": "staz104" },
+"adminObjectId": { "value": "" }  // Optional: your Azure AD Object ID for Key Vault access
+```
+
+After editing the parameter file, run:
+```bash
+azd up
+```
+
+**Note:** `adminUsername` and `adminPassword` are handled interactively by `azd` during deployment and should not be added to the parameter file.
 
 ## Cleanup for Previous Deployments
 

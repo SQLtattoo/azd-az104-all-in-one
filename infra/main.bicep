@@ -42,6 +42,28 @@ param privateDnsZoneBase string = 'contoso.local'
 param vaultName          string = 'contoso-rsv'
 param storageAccountPrefix string = 'staz104'
 
+// VM Size Configuration
+@description('Default VM size for all tiers unless overridden')
+param defaultVmSize string = 'Standard_B2ms'
+
+@description('Override VM size for web tier (leave empty to use default)')
+param webTierVmSize string = ''
+
+@description('Override VM size for app tier (leave empty to use default)')
+param appTierVmSize string = ''
+
+@description('Override VM size for workload tier (leave empty to use default)')
+param workloadTierVmSize string = ''
+
+@description('Override VM size for VMSS (leave empty to use default)')
+param vmssVmSize string = ''
+
+// Resolve VM sizes: use tier-specific override if provided, otherwise use default
+var resolvedWebTierVmSize = !empty(webTierVmSize) ? webTierVmSize : defaultVmSize
+var resolvedAppTierVmSize = !empty(appTierVmSize) ? appTierVmSize : defaultVmSize
+var resolvedWorkloadTierVmSize = !empty(workloadTierVmSize) ? workloadTierVmSize : defaultVmSize
+var resolvedVmssVmSize = !empty(vmssVmSize) ? vmssVmSize : defaultVmSize
+
 var hubVnetName = 'hub-vnet'
 var spoke1VnetName = 'spoke1-vnet'
 var spoke2VnetName = 'spoke2-vnet'
@@ -113,6 +135,7 @@ module webTier 'webTier.bicep' = {
     subnetName:     'default'
     adminUsername:  adminUsername
     adminPassword:  adminPassword
+    vmSize:         resolvedWebTierVmSize
   }
   dependsOn: [
     //network 
@@ -132,6 +155,7 @@ module appTier 'appTier.bicep' = {
     appGwSubnetName: 'AppGwSubnet' // Make sure this subnet exists in the spoke2-vnet
     adminUsername: adminUsername
     adminPassword: adminPassword
+    vmSize: resolvedAppTierVmSize
   }
   dependsOn: [
     network 
@@ -148,6 +172,7 @@ module workloadTier 'workloadTier.bicep' = {
     subnetName: 'default'
     adminUsername: adminUsername
     adminPassword: adminPassword
+    vmSize: resolvedWorkloadTierVmSize
   }
   dependsOn: [
     network 
@@ -204,7 +229,7 @@ module vmss 'vmss.bicep' = {
     location:       spoke2Location
     vnetName:       spoke2VnetName
     subnetName:     'default'
-    vmSku:          'Standard_B2s'
+    vmSku:          resolvedVmssVmSize
     instanceCount:  2
     adminUsername:  adminUsername
     adminPassword: adminPassword

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubLocation": {
+      "value": "uksouth"
+    },
+    "spoke1Location": {
+      "value": "uksouth"
+    },
+    "spoke2Location": {
+      "value": "northeurope"
+    },
+    "workloadLocation": {
+      "value": "uksouth"
+    },
+    "deployBastion": {
+      "value": true
+    },
+    "deployVpnGateway": {
+      "value": true
+    },
+    "deployKeyVault": {
+      "value": true
+    },
+    "publicDnsZoneBase": {
+      "value": "contoso.com"
+    },
+    "privateDnsZoneBase": {
+      "value": "contoso.local"
+    },
+    "vaultName": {
+      "value": "contoso-rsv"
+    },
+    "storageAccountPrefix": {
+      "value": "staz104"
+    },
+    "adminObjectId": {
+      "value": ""  
+    },
+    "defaultVmSize": {
+      "value": "Standard_B2ms"
+    },
+    "webTierVmSize": {
+      "value": ""
+    },
+    "appTierVmSize": {
+      "value": ""
+    },
+    "workloadTierVmSize": {
+      "value": ""
+    },
+    "vmssVmSize": {
+      "value": ""
+    }
+  }
+}
