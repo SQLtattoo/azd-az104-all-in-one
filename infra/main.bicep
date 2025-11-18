@@ -138,7 +138,7 @@ module webTier 'webTier.bicep' = {
     vmSize:         resolvedWebTierVmSize
   }
   dependsOn: [
-    //network 
+    network 
   ]
 }
 
