@@ -180,6 +180,7 @@ module storageKeyAccess 'modules/keyvaultAccess.bicep' = if (deployKeyVault && e
   }
   dependsOn: [
     keyVaultResource
+    storageAccount
   ]
 }
 
