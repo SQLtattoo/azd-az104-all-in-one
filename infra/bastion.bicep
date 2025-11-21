@@ -12,10 +12,14 @@ param bastionName string = 'hub-bastion'
 @description('Name for the Public IP to use')
 param pipName     string = 'hub-bastion-pip'
 
+@description('Tags to apply to resources')
+param tags object = {}
+
 // 1. Public IP for Bastion
 resource bastionPIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
   name: pipName
   location: location
+  tags: tags
   sku: { name: 'Standard' }
   properties: {
     publicIPAllocationMethod: 'Static'
@@ -32,6 +36,7 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
 resource bastionHost 'Microsoft.Network/bastionHosts@2021-05-01' = {
   name: bastionName
   location: location
+  tags: tags
   sku: { name: 'Standard' }
   properties: {
     ipConfigurations: [

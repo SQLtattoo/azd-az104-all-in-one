@@ -15,6 +15,8 @@ param location string = resourceGroup().location
 @description('Location of the private endpoint resource')
 param vnetName string = 'spoke2-vnet'
 
+@description('Tags to apply to resources')
+param tags object = {}
 
 // 1️⃣ Reference the consumer VNet & subnet
 resource spoke2Vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
@@ -26,6 +28,7 @@ var consumerSubnetId = '${spoke2Vnet.id}/subnets/${consumerSubnetName}'
 resource pe 'Microsoft.Network/privateEndpoints@2021-05-01' = {
   name: peName
   location: location
+  tags: tags
   properties: {
     subnet: { id: consumerSubnetId }
     privateLinkServiceConnections: [

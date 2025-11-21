@@ -26,6 +26,9 @@ param adminPassword string
 @description('VM size for workload tier VM')
 param vmSize string = 'Standard_B2ms'
 
+@description('Tags to apply to resources')
+param tags object = {}
+
 // Reference the workload VNet
 resource workloadVnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: vnetName
@@ -38,6 +41,7 @@ var subnetRef = '${workloadVnet.id}/subnets/${subnetName}'
 resource privateLB 'Microsoft.Network/loadBalancers@2021-05-01' = {
   name: lbName
   location: location
+  tags: tags
   sku: {
     name: 'Standard'
   }
@@ -98,6 +102,7 @@ resource privateLB 'Microsoft.Network/loadBalancers@2021-05-01' = {
 resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
   name: '${vmName}-nic'
   location: location
+  tags: tags
   properties: {
     ipConfigurations: [
       {
@@ -122,6 +127,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
 resource vm 'Microsoft.Compute/virtualMachines@2021-07-01' = {
   name: vmName
   location: location
+  tags: tags
   properties: {
     hardwareProfile: {
       vmSize: vmSize
@@ -159,6 +165,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-07-01' = {
 resource privateLinkService 'Microsoft.Network/privateLinkServices@2021-05-01' = {
   name: 'workload-pls'
   location: location
+  tags: tags
   properties: {
     enableProxyProtocol: false
     loadBalancerFrontendIpConfigurations: [

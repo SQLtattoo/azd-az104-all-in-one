@@ -13,10 +13,14 @@ param gatewayPip    string = 'hub-vpn-pip'
 @description('Name of the VPN gateway')
 param vpnGatewayName string = 'hub-vpn-gateway'
 
+@description('Tags to apply to resources')
+param tags object = {}
+
 // 1️⃣ Create a Public IP for the VPN Gateway
 resource publicIp 'Microsoft.Network/publicIPAddresses@2021-08-01' = {
   name: gatewayPip
   location: location
+  tags: tags
   sku: {
     name: 'Standard'
   }
@@ -34,6 +38,7 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2021-08-01' existing = {
 resource vpnGateway 'Microsoft.Network/virtualNetworkGateways@2021-08-01' = {
   name: vpnGatewayName
   location: location
+  tags: tags
 
   properties: {
     vpnType: 'RouteBased'

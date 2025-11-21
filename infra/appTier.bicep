@@ -34,6 +34,9 @@ param adminPassword string
 @description('VM size for app tier VMs')
 param vmSize string = 'Standard_B2s'
 
+@description('Tags to apply to resources')
+param tags object = {}
+
 // Reference the spoke2 VNet
 resource spoke2Vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: vnetName
@@ -43,6 +46,7 @@ resource spoke2Vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
 resource appGwPip 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
   name: '${appGwName}-pip'
   location: location
+  tags: tags
   sku: {
     name: 'Standard'
   }
@@ -62,6 +66,7 @@ var appGwSubnetRef = '${spoke2Vnet.id}/subnets/${appGwSubnetName}'
 resource nics 'Microsoft.Network/networkInterfaces@2021-05-01' = [for vm in vmNames: {
   name: '${vm}-nic'
   location: location
+  tags: tags
   properties: {
     ipConfigurations: [
       {
@@ -81,6 +86,7 @@ resource nics 'Microsoft.Network/networkInterfaces@2021-05-01' = [for vm in vmNa
 resource vms 'Microsoft.Compute/virtualMachines@2021-07-01' = [for (vm, i) in vmNames: {
   name: vm
   location: location
+  tags: tags
   properties: {
     hardwareProfile: {
       vmSize: vmSize
@@ -118,6 +124,7 @@ resource vms 'Microsoft.Compute/virtualMachines@2021-07-01' = [for (vm, i) in vm
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: '${appServiceName}-plan'
   location: location
+  tags: tags
   sku: {
     name: 'S1'
     tier: 'Standard'
@@ -127,6 +134,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
 resource appService 'Microsoft.Web/sites@2021-02-01' = {
   name: '${appServiceName}-${uniqueString(resourceGroup().id)}'
   location: location
+  tags: tags
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
@@ -169,6 +177,7 @@ resource appServiceIPRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
 resource appGateway 'Microsoft.Network/applicationGateways@2021-05-01' = {
   name: appGwName
   location: location
+  tags: tags
   properties: {
     sku: {
       name: 'WAF_v2'

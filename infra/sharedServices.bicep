@@ -36,22 +36,28 @@ param adminObjectId string = ''
 @description('Whether to enable Customer-Managed Keys for storage encryption')
 param enableCmkForStorage bool = false
 
+@description('Tags to apply to resources')
+param tags object = {}
+
 // 1️⃣ Public DNS Zone
 resource publicDnsZone 'Microsoft.Network/dnsZones@2018-05-01' = {
   name: uniquePublicDnsZoneName
   location: 'global'
+  tags: tags
 }
 
 // 2️⃣ Private DNS Zone
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: uniquePrivateDnsZoneName
   location: 'global'
+  tags: tags
 }
 
 // 3️⃣ Recovery Services Vault
 resource recoveryVault 'Microsoft.RecoveryServices/vaults@2021-08-01' = {
   name: vaultName
   location: location
+  tags: tags
   sku: {
     name: 'RS0'
     tier: 'Standard'
@@ -64,14 +70,13 @@ module common 'common.bicep' = {
   name: 'shared-common-params'
 }
 
-// Fix: Define literal tags object since common module reference is used
-var keyVaultTags = {
+// Union existing tags with passed tags
+var keyVaultTags = union({
   project: 'AZ104 Demo'
   environment: 'demo'
   costCenter: 'Education'
   CostControl: 'ignore'
-  SecurityControl: 'ignore'
-}
+}, tags)
 
 // Key Vault for customer-managed keys - renamed to be clearer
 resource keyVaultResource 'Microsoft.KeyVault/vaults@2022-07-01' = if (deployKeyVault) {
@@ -130,6 +135,7 @@ resource storageEncryptionKey 'Microsoft.KeyVault/vaults/keys@2022-07-01' = if (
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: uniqueStorageAccountName
   location: location
+  tags: tags
   sku: {
     name: storageSku
   }
@@ -144,7 +150,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
       keySource: enableCmkForStorage && deployKeyVault ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
       keyvaultproperties: enableCmkForStorage && deployKeyVault ? {
         keyname: 'storage-cmk'
-        keyvaulturi: keyVaultResource.properties.vaultUri
+        keyvaulturi: 'https://${keyVaultResource.name}.${environment().suffixes.keyvaultDns}/'
         keyversion: ''
       } : null
       services: {
@@ -173,8 +179,7 @@ module storageKeyAccess 'modules/keyvaultAccess.bicep' = if (deployKeyVault && e
     ]
   }
   dependsOn: [
-    keyVaultResource // Reference correct resource name
-    storageAccount
+    keyVaultResource
   ]
 }
 
@@ -183,4 +188,4 @@ output publicDnsZoneName string = uniquePublicDnsZoneName
 output privateDnsZoneName string = uniquePrivateDnsZoneName
 output storageAccountName string = uniqueStorageAccountName
 output keyVaultName string = deployKeyVault ? keyVaultResource.name : ''
-output keyVaultUri string = deployKeyVault ? keyVaultResource.properties.vaultUri : ''
+output keyVaultUri string = deployKeyVault ? 'https://${keyVaultResource.name}.${environment().suffixes.keyvaultDns}/' : ''

@@ -33,11 +33,14 @@ param adminUsername string
 @description('VM size for web tier VMs')
 param vmSize string = 'Standard_B2ms'
 
-// Define tags directly to avoid the module reference calculation error
-param tags object = {
+// Tags parameter - will be unioned with existing tags
+param tags object = {}
+
+// Define resource tags by unioning passed tags with existing ones
+var resourceTags = union({
   environment: 'demo'
   projectName: 'az104'
-}
+}, tags)
 
 // Define SKUs directly rather than using module outputs
 var lbSku = 'Standard'
@@ -54,7 +57,7 @@ var subnetRef = '${spoke1Vnet.id}/subnets/${subnetName}'
 resource lbPIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
   name: '${lbName}-pip'
   location: location
-  tags: tags
+  tags: resourceTags
   sku: { name: pipSku }
   properties: {
     publicIPAllocationMethod: 'Static'
@@ -69,7 +72,7 @@ var healthProbeId = resourceId('Microsoft.Network/loadBalancers/probes', lbName,
 resource lb 'Microsoft.Network/loadBalancers@2021-05-01' = {
   name: lbName
   location: location
-  tags: tags
+  tags: resourceTags
   sku: { name: lbSku }
   properties: {
     frontendIPConfigurations: [
@@ -138,7 +141,7 @@ module webVMs 'modules/vm.bicep' = [for (vm, i) in vmNames: {
     vmSize: vmSize
     loadBalancerBackendPoolId: backendPoolId
     natRuleId: resourceId('Microsoft.Network/loadBalancers/inboundNatRules', lbName, 'RDP-VM${i + 1}')
-    tags: tags
+    tags: resourceTags
     installIIS: true
   }
   dependsOn: [

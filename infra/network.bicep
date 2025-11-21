@@ -26,6 +26,9 @@ param spoke2VnetName string
 @description('Name of workload virtual network (private-link)')
 param workloadVnetName string
 
+@description('Tags to apply to resources')
+param tags object = {}
+
 // Use the common network address prefixes
 var hubAddressPrefix      = common.outputs.networkAddressSpace.hub
 var spoke1AddressPrefix   = common.outputs.networkAddressSpace.spoke1  
@@ -40,19 +43,18 @@ var gatewaySubnetPrefix = common.outputs.subnets.gateway.prefix
 var hubMgmtSubnetName = common.outputs.subnets.management.name
 var hubMgmtSubnetPrefix = common.outputs.subnets.management.prefix
 
-// Apply common tags to all resources - fixed to use object literal directly
-var tags = {
+// Apply common tags to all resources - union with passed tags
+var resourceTags = union(tags, {
   environment: 'demo'
   projectName: 'az104'
   CostControl: 'ignore'
-  SecurityControl: 'ignore'
-}
+})
 
 // Create Hub VNet
 resource hubVnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: hubVnetName
   location: hublocation
-  tags: tags
+  tags: resourceTags
   properties: {
     addressSpace: {
       addressPrefixes: [ hubAddressPrefix ]
@@ -84,6 +86,7 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
 resource spoke1Nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${spoke1VnetName}-nsg'
   location: spoke1location
+  tags: resourceTags
   properties: {
     securityRules: [
       {
@@ -107,6 +110,7 @@ resource spoke1Nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
 resource spoke2Nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${spoke2VnetName}-nsg'
   location: spoke2location
+  tags: resourceTags
   properties: {
     securityRules: [
       {
@@ -156,6 +160,7 @@ resource spoke2Nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
 resource workloadNsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${workloadVnetName}-nsg'
   location: workloadlocation
+  tags: resourceTags
   properties: {
     securityRules: [
       {
@@ -179,6 +184,7 @@ resource workloadNsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
 resource appGwNsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${spoke2VnetName}-appgw-nsg'
   location: spoke2location
+  tags: resourceTags
   properties: {
     securityRules: [
       {
@@ -240,7 +246,8 @@ resource appGwNsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
 // Create Route Table with custom route to Virtual Appliance
 resource customRouteTable 'Microsoft.Network/routeTables@2021-05-01' = {
   name: 'custom-route-table'
-  location: spoke2location 
+  location: spoke2location
+  tags: resourceTags
   properties: {
     disableBgpRoutePropagation: false
     routes: [

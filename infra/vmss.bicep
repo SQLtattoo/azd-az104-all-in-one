@@ -22,6 +22,9 @@ param adminUsername string = 'azureuser'
 @description('Admin password for VM')
 param adminPassword string
 
+@description('Tags to apply to resources')
+param tags object = {}
+
 // Reference existing VNet and Subnet
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: vnetName
@@ -36,6 +39,7 @@ var vmssName = 'vmssaz104'
 resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2021-07-01' = {
   name: vmssName
   location: location
+  tags: tags
   sku: {
     name: vmSku
     tier: 'Standard'

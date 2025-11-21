@@ -64,6 +64,11 @@ var resolvedAppTierVmSize = !empty(appTierVmSize) ? appTierVmSize : defaultVmSiz
 var resolvedWorkloadTierVmSize = !empty(workloadTierVmSize) ? workloadTierVmSize : defaultVmSize
 var resolvedVmssVmSize = !empty(vmssVmSize) ? vmssVmSize : defaultVmSize
 
+// Standard tag for trainer demos
+var standardTags = {
+  SecurityControl: 'Ignore'
+}
+
 var hubVnetName = 'hub-vnet'
 var spoke1VnetName = 'spoke1-vnet'
 var spoke2VnetName = 'spoke2-vnet'
@@ -81,6 +86,7 @@ module network 'network.bicep' = {
     spoke1VnetName: spoke1VnetName
     spoke2VnetName: spoke2VnetName
     workloadVnetName: workloadVnetName
+    tags: standardTags
   }
 }
 
@@ -91,6 +97,7 @@ module bastion 'bastion.bicep' = if (deployBastion) {
     vnetName:      hubVnetName
     bastionName:   'hub-bastion'
     pipName:       'hub-bastion-pip'
+    tags: standardTags
   }
   dependsOn: [
     network 
@@ -104,6 +111,7 @@ module vpnGateway 'vpnGateway.bicep' = if (deployVpnGateway) {
     vnetName: hubVnetName
     gatewayPip: 'hub-vpn-pip'
     vpnGatewayName: 'hub-vpn-gateway'
+    tags: standardTags
   }
   dependsOn: [
     network  
@@ -136,6 +144,7 @@ module webTier 'webTier.bicep' = {
     adminUsername:  adminUsername
     adminPassword:  adminPassword
     vmSize:         resolvedWebTierVmSize
+    tags: standardTags
   }
   dependsOn: [
     network 
@@ -156,6 +165,7 @@ module appTier 'appTier.bicep' = {
     adminUsername: adminUsername
     adminPassword: adminPassword
     vmSize: resolvedAppTierVmSize
+    tags: standardTags
   }
   dependsOn: [
     network 
@@ -173,6 +183,7 @@ module workloadTier 'workloadTier.bicep' = {
     adminUsername: adminUsername
     adminPassword: adminPassword
     vmSize: resolvedWorkloadTierVmSize
+    tags: standardTags
   }
   dependsOn: [
     network 
@@ -187,6 +198,7 @@ module consumerPe 'consumerPE.bicep' = {
     consumerSubnetName: 'default'
     peName:             'workload-pe'
     plsName:            'workload-pls'
+    tags: standardTags
   }
   dependsOn: [
     workloadTier
@@ -204,6 +216,7 @@ module shared 'sharedServices.bicep' = {
     deployKeyVault: deployKeyVault
     adminObjectId: adminObjectId
     enableCmkForStorage: enableCmkForStorage
+    tags: standardTags
   }
   dependsOn: [
     workloadTier
@@ -233,6 +246,7 @@ module vmss 'vmss.bicep' = {
     instanceCount:  2
     adminUsername:  adminUsername
     adminPassword: adminPassword
+    tags: standardTags
   }
   dependsOn: [
     network
