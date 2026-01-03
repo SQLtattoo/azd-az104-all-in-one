@@ -125,7 +125,7 @@ module vpnGateway 'vpnGateway.bicep' = if (deployVpnGateway) {
 module webTier 'webTier.bicep' = {
   name: 'webTier'
   params: {
-    location:       hubLocation
+    location:       spoke1Location
     vnetName:       spoke1VnetName
     lbName:         'web-lb'
     vmNames:        [
