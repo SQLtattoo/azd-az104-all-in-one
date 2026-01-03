@@ -12,16 +12,16 @@
       "value": true
     },
     "hubLocation": {
-      "value": "uksouth"
+      "value": "eastus2"
     },
     "spoke1Location": {
-      "value": "westeurope"
+      "value": "eastus2"
     },
     "spoke2Location": {
-      "value": "northeurope"
+      "value": "germanywestcentral"
     },
     "workloadLocation": {
-      "value": "uksouth"
+      "value": "eastus2"
     },
     "publicDnsZoneBase": {
       "value": "contoso.com"
