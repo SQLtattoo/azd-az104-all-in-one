@@ -27,7 +27,7 @@
       "value": ""  
     },
     "defaultVmSize": {
-      "value": "Standard_B2ms"
+      "value": "Standard_B2s_v2"
     },
     "webTierVmSize": {
       "value": ""

@@ -17,7 +17,7 @@ param allowedLocations array = [
 @description('List of allowed VM sizes')
 param allowedVmSizes array = [
   'Standard_B2s'
-  'Standard_B2ms'
+  'Standard_B2s_v2'
   'Standard_B4ms'
   'Standard_D2s_v3'
   'Standard_D4s_v3'

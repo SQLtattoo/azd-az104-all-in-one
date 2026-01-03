@@ -44,7 +44,7 @@ param storageAccountPrefix string = 'staz104'
 
 // VM Size Configuration
 @description('Default VM size for all tiers unless overridden')
-param defaultVmSize string = 'Standard_B2ms'
+param defaultVmSize string = 'Standard_B2s_v2'
 
 @description('Override VM size for web tier (leave empty to use default)')
 param webTierVmSize string = ''
@@ -253,7 +253,7 @@ module governance 'governance.bicep' = {
     ]
     allowedVmSizes: [
       'Standard_B2s' 
-      'Standard_B2ms'
+      'Standard_B2s_v2'
       'Standard_B4ms'
     ]
   }
