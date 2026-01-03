@@ -93,11 +93,11 @@ Edit `infra/main.parameters.json` before running `azd up`. Key parameters you ca
 Control VM sizes for cost optimization or quota constraints:
 
 ```json
-"defaultVmSize": { "value": "Standard_B2s" },        // Default for all tiers
+"defaultVmSize": { "value": "Standard_B2s_v2" },        // Default for all tiers
 "webTierVmSize": { "value": "" },                   // Empty = use default
-"appTierVmSize": { "value": "Standard_B4ms" },      // Override for app tier only
+"appTierVmSize": { "value": "Standard_B2s_v2" },      // Override for app tier only
 "workloadTierVmSize": { "value": "" },              // Empty = use default
-"vmssVmSize": { "value": "Standard_B2s" }           // VMSS instance size
+"vmssVmSize": { "value": "Standard_B2s_v2" }           // VMSS instance size
 ```
 
 **Example: Low-quota environment**
