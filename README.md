@@ -4,10 +4,17 @@ This repository contains infrastructure as code (Bicep) to deploy a comprehensiv
 
 ## Pre-deployment Steps
 
-1. **Configure deployment parameters** (optional):
+1. **Verify VM SKU availability in your target regions**:
+   This deployment uses `Standard_B2s_v2` VM SKUs by default. Check that this SKU is available in your chosen regions:
+   ```bash
+   az vm list-skus --resource-type virtualMachines --query "[?name=='Standard_B2s_v2'].locations[]" -o tsv
+   ```
+   If the SKU is not available in your target regions, you can modify the VM sizes in `infra/main.parameters.json` or choose different regions.
+
+2. **Configure deployment parameters** (optional):
    Before deploying, you can customize the deployment by editing `infra/main.parameters.json`. See the "Configuration" section below for details.
 
-2. **Verify subscription access**:
+3. **Verify subscription access**:
    - Ensure you have Owner or Contributor access to the subscription
    - For governance components, you need User Access Administrator to create custom roles
 

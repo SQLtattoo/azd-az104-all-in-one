@@ -11,6 +11,18 @@
     "deployKeyVault": {
       "value": true
     },
+    "hubLocation": {
+      "value": "uksouth"
+    },
+    "spoke1Location": {
+      "value": "westeurope"
+    },
+    "spoke2Location": {
+      "value": "northeurope"
+    },
+    "workloadLocation": {
+      "value": "uksouth"
+    },
     "publicDnsZoneBase": {
       "value": "contoso.com"
     },
