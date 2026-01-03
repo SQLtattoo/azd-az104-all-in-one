@@ -5,7 +5,24 @@ infra:
   provider: bicep   # (default; you can omit this line)
   path: infra       # relative path to all your .bicep files
   module: main      # the single entry-point .bicep file
-  # Note: Runtime parameters have been moved to infra/main.parameters.json
+  parameters:
+    hubLocation:
+      type: location
+      description: "Location for hub virtual network resources"
+      default: "uksouth"
+    spoke1Location:
+      type: location
+      description: "Location for spoke1 virtual network resources"
+      default: "uksouth"
+    spoke2Location:
+      type: location
+      description: "Location for spoke2 virtual network resources (different region for demo)"
+      default: "northeurope"
+    workloadLocation:
+      type: location
+      description: "Location for workload virtual network resources"
+      default: "uksouth"
+  # Note: Other runtime parameters remain in infra/main.parameters.json
   # See README.md "Configuration" section for details on customizing your deployment
 
     

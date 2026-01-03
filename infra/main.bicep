@@ -1,16 +1,16 @@
 targetScope = 'resourceGroup'
 
 @description('Location for hub vnet resources')
-param hubLocation string = 'ukSouth'
+param hubLocation string
 
 @description('Location for spoke1 vnet resources')
-param spoke1Location string = 'ukSouth'
+param spoke1Location string
 
 @description('Location for spoke2 vnet resources')
-param spoke2Location string = 'northeurope'
+param spoke2Location string
 
 @description('Location for workload vnet resources')
-param workloadLocation string = 'uksouth'
+param workloadLocation string
 
 @description('Administrator username for virtual machines')
 param adminUsername string
