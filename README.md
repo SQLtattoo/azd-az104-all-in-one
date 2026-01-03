@@ -11,10 +11,15 @@ This repository contains infrastructure as code (Bicep) to deploy a comprehensiv
    ```
    If the SKU is not available in your target regions, you can modify the VM sizes in `infra/main.parameters.json` or choose different regions.
 
-2. **Configure deployment parameters** (optional):
+2. **Check App Service quota in your target regions**:
+   Verify that your subscription has sufficient App Service quota for the deployment. Check that both "Total Regional VMs" and "S1 VMs" quotas are not set to 0 in your target regions.
+   
+   ![App Service Quota Check](demoguide/images/appservicequota.png)
+
+3. **Configure deployment parameters** (optional):
    Before deploying, you can customize the deployment by editing `infra/main.parameters.json`. See the "Configuration" section below for details.
 
-3. **Verify subscription access**:
+4. **Verify subscription access**:
    - Ensure you have Owner or Contributor access to the subscription
    - For governance components, you need User Access Administrator to create custom roles
 
