@@ -2,18 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "hubLocation": {
-      "value": "uksouth"
-    },
-    "spoke1Location": {
-      "value": "uksouth"
-    },
-    "spoke2Location": {
-      "value": "northeurope"
-    },
-    "workloadLocation": {
-      "value": "uksouth"
-    },
     "deployBastion": {
       "value": true
     },
@@ -22,6 +10,18 @@
     },
     "deployKeyVault": {
       "value": true
+    },
+    "hubLocation": {
+      "value": "eastus2"
+    },
+    "spoke1Location": {
+      "value": "eastus2"
+    },
+    "spoke2Location": {
+      "value": "germanywestcentral"
+    },
+    "workloadLocation": {
+      "value": "eastus2"
     },
     "publicDnsZoneBase": {
       "value": "contoso.com"
@@ -39,7 +39,7 @@
       "value": ""  
     },
     "defaultVmSize": {
-      "value": "Standard_B2ms"
+      "value": "Standard_B2s_v2"
     },
     "webTierVmSize": {
       "value": ""

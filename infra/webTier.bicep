@@ -36,7 +36,7 @@ param adminPassword string
 param adminUsername string
 
 @description('VM size for web tier VMs')
-param vmSize string = 'Standard_B2ms'
+param vmSize string = 'Standard_B2s_v2'
 
 // Define tags directly to avoid the module reference calculation error
 param tags object = {
