@@ -24,7 +24,7 @@
 ***
 ### 1. What Resources are getting deployed
 
-<img src="images/az104allinone-diagram.png" alt="Solution diagram">
+<img src="https://raw.githubusercontent.com/SQLtattoo/azd-az104-all-in-one/master/demoguide/images/az104allinone-diagram.png" alt="Solution diagram">
 <br></br>
 
 ### 2. What can I demo from this scenario after deployment
