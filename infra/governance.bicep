@@ -7,12 +7,7 @@ param deployGovernance bool = false
 param resourceGroupName string
 
 @description('List of allowed locations for resources')
-param allowedLocations array = [
-  'ukSouth'
-  'northeurope'
-  'eastus2'
-  'westus2'
-]
+param allowedLocations array
 
 @description('List of allowed VM sizes')
 param allowedVmSizes array = [

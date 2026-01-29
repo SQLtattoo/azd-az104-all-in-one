@@ -1,10 +1,5 @@
 targetScope = 'resourceGroup'
 
-// Import common parameters - UPDATED PATH
-module common 'common.bicep' = {
-  name: 'common-params'
-}
-
 @description('Location for hub vnet resources')
 param hublocation string
 
@@ -16,6 +11,16 @@ param spoke2location string
 
 @description('Location for workload vnet resources')
 param workloadlocation string
+
+// Import common parameters - UPDATED PATH
+module common 'common.bicep' = {
+  name: 'common-params'
+  params: {
+    primaryLocation: hublocation
+    secondaryLocation: spoke2location
+    workloadLocation: workloadlocation
+  }
+}
 
 @description('Name of the hub virtual network')
 param hubVnetName string

@@ -42,7 +42,41 @@ azd up --force  # Force redeployment even if no changes detected
 azd deploy --parameters @infra/main.parameters.json
 ```
 ## Demo Features
-Check the **[demo guide](https://raw.githubusercontent.com/sqltattoo/azd-az104-all-in-one/refs/heads/main/demoguide/demoguide.md)** for details on the demo scenario.
+Check the **[demo guide](https://github.com/SQLtattoo/azd-az104-all-in-one/blob/master/demoguide/demoguide.md)** for details on the demo scenario.
+
+## Cleanup
+
+### Tearing Down the Environment
+
+To remove all deployed resources:
+
+```bash
+# Standard cleanup (prompts for confirmation)
+azd down
+
+# Skip confirmation prompts
+azd down --force
+
+# Also purge soft-deleted resources (Key Vault, etc.)
+azd down --purge --force
+```
+
+**Note:** The `azd down` command automatically cleans up subscription-scoped governance deployments via a postdown hook. The governance deployment (custom RBAC roles and policy definitions) is removed automatically.
+
+### Manual Cleanup (if needed)
+
+If you need to manually clean up the governance deployment:
+
+```bash
+# Check the hub location from your parameter file
+$hubLocation = (Get-Content infra/main.parameters.json | ConvertFrom-Json).parameters.hubLocation.value
+
+# Delete the subscription-scoped governance deployment
+az deployment sub delete --name "governance-$hubLocation"
+
+# Or run the cleanup hook manually
+azd hooks run postdown
+```
 
 ## Configuration
 

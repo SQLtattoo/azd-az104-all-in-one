@@ -62,6 +62,11 @@ resource recoveryVault 'Microsoft.RecoveryServices/vaults@2021-08-01' = {
 // Import common module for shared variables
 module common 'common.bicep' = {
   name: 'shared-common-params'
+  params: {
+    primaryLocation: location
+    secondaryLocation: location
+    workloadLocation: location
+  }
 }
 
 // Fix: Define literal tags object since common module reference is used

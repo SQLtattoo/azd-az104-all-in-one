@@ -3,13 +3,13 @@ targetScope = 'resourceGroup'
 
 // Locations
 @description('Primary location for hub resources')
-param primaryLocation string = 'ukSouth'
+param primaryLocation string
 
 @description('Secondary location for spoke2 resources')
-param secondaryLocation string = 'northeurope'
+param secondaryLocation string
 
 @description('Location for workload resources')
-param workloadLocation string = 'eastus2'
+param workloadLocation string
 
 // Resource naming
 @description('Project prefix for resource naming')

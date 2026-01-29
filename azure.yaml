@@ -8,4 +8,20 @@ infra:
   # Note: Runtime parameters have been moved to infra/main.parameters.json
   # See README.md "Configuration" section for details on customizing your deployment
 
+hooks:
+  postdown:
+    shell: pwsh
+    interactive: true
+    continueOnError: true
+    run: |
+      Write-Host "Cleaning up subscription-scoped governance deployment..." -ForegroundColor Yellow
+      $hubLocation = (Get-Content infra/main.parameters.json | ConvertFrom-Json).parameters.hubLocation.value
+      $deploymentName = "governance-$hubLocation"
+      Write-Host "Attempting to delete deployment: $deploymentName" -ForegroundColor Cyan
+      az deployment sub delete --name $deploymentName 2>$null
+      if ($LASTEXITCODE -eq 0) {
+        Write-Host "✓ Governance deployment cleaned up successfully" -ForegroundColor Green
+      } else {
+        Write-Host "ℹ No governance deployment found (this is normal if governance wasn't deployed)" -ForegroundColor Gray
+      }
     

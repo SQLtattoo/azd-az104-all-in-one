@@ -1,13 +1,18 @@
 // infra/webTier.bicep
 targetScope = 'resourceGroup'
 
+@description('Region for Web tier')
+param location string
+
 // Import common settings - UPDATED PATH
 module common 'common.bicep' = {
   name: 'web-common-params'
+  params: {
+    primaryLocation: location
+    secondaryLocation: location
+    workloadLocation: location
+  }
 }
-
-@description('Region for Web tier')
-param location string
 
 @description('Name of the spoke1 VNet')
 param vnetName string
