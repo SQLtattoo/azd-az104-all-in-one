@@ -20,6 +20,7 @@ resource publicIp 'Microsoft.Network/publicIPAddresses@2021-08-01' = {
   sku: {
     name: 'Standard'
   }
+  zones: ['1', '2', '3'] // Zone-redundant configuration (required for AZ VPN gateway SKUs)
   properties: {
     publicIPAllocationMethod: 'Static'
   }
@@ -54,8 +55,8 @@ resource vpnGateway 'Microsoft.Network/virtualNetworkGateways@2021-08-01' = {
       }
     ]
     sku: {
-      name: 'VpnGw1' // Example SKU, adjust based on your requirements
-      tier: 'VpnGw1' // Tier should match the SKU name
+      name: 'VpnGw1AZ' // Zone-redundant SKU (required as of 2025)
+      tier: 'VpnGw1AZ' // Tier should match the SKU name
     }
   }
 }
