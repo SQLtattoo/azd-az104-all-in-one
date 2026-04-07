@@ -24,7 +24,7 @@ param adminUsername string
 param adminPassword string
 
 @description('VM size for workload tier VM')
-param vmSize string = 'Standard_B2ms'
+param vmSize string = 'Standard_B2s_v2'
 
 // Reference the workload VNet
 resource workloadVnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {

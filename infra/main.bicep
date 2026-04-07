@@ -1,16 +1,16 @@
 targetScope = 'resourceGroup'
 
 @description('Location for hub vnet resources')
-param hubLocation string = 'ukSouth'
+param hubLocation string
 
 @description('Location for spoke1 vnet resources')
-param spoke1Location string = 'ukSouth'
+param spoke1Location string
 
 @description('Location for spoke2 vnet resources')
-param spoke2Location string = 'northeurope'
+param spoke2Location string
 
 @description('Location for workload vnet resources')
-param workloadLocation string = 'uksouth'
+param workloadLocation string
 
 @description('Administrator username for virtual machines')
 param adminUsername string
@@ -44,7 +44,7 @@ param storageAccountPrefix string = 'staz104'
 
 // VM Size Configuration
 @description('Default VM size for all tiers unless overridden')
-param defaultVmSize string = 'Standard_B2ms'
+param defaultVmSize string = 'Standard_B2s_v2'
 
 @description('Override VM size for web tier (leave empty to use default)')
 param webTierVmSize string = ''
@@ -125,7 +125,7 @@ module vpnGateway 'vpnGateway.bicep' = if (deployVpnGateway) {
 module webTier 'webTier.bicep' = {
   name: 'webTier'
   params: {
-    location:       hubLocation
+    location:       spoke1Location
     vnetName:       spoke1VnetName
     lbName:         'web-lb'
     vmNames:        [
@@ -253,7 +253,7 @@ module governance 'governance.bicep' = {
     ]
     allowedVmSizes: [
       'Standard_B2s' 
-      'Standard_B2ms'
+      'Standard_B2s_v2'
       'Standard_B4ms'
     ]
   }

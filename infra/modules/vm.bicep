@@ -15,7 +15,7 @@ param adminUsername string
 param adminPassword string
 
 @description('VM size')
-param vmSize string = 'Standard_B2ms'
+param vmSize string = 'Standard_B2s_v2'
 
 @description('Load balancer backend pool ID (optional)')
 param loadBalancerBackendPoolId string = ''

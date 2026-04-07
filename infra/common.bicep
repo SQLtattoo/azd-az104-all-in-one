@@ -57,7 +57,7 @@ var subnets = {
 // VM sizing
 var vmSizes = {
   small: 'Standard_B2s'
-  medium: 'Standard_B2ms'
+  medium: 'Standard_B2s_v2'
   large: 'Standard_B4ms'
 }
 
