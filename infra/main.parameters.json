@@ -11,18 +11,9 @@
     "deployKeyVault": {
       "value": true
     },
-    "hubLocation": {
-      "value": "eastus2"
-    },
-    "spoke1Location": {
-      "value": "eastus2"
-    },
-    "spoke2Location": {
-      "value": "germanywestcentral"
-    },
-    "workloadLocation": {
-      "value": "eastus2"
-    },
+    "hubLocation":      { "value": "${AZURE_LOCATION}" },
+    "spoke1Location":   { "value": "${AZURE_LOCATION}" },
+    "workloadLocation": { "value": "${AZURE_LOCATION}" },
     "publicDnsZoneBase": {
       "value": "contoso.com"
     },

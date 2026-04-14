@@ -46,6 +46,16 @@ azd init -t sqltattoo/azd-az104-all-in-one
 azd up
 ```
 
+**During `azd up` you will be prompted for:**
+
+| Prompt | Purpose | Example |
+|--------|---------|--------|
+| `hubLocation` | Primary region — used for hub, spoke1, and workload VNets | `uksouth` |
+| `spoke2Location` | Cross-region spoke — **must be different from hub** to demonstrate multi-region routing | `northeurope` |
+| `adminPassword` | VM administrator password | *(secure input)* |
+
+> The separate `spoke2Location` prompt is intentional — deploying spoke2 in a different region is a core AZ-104 demo scenario (cross-region VNet peering, latency-based routing).
+
 **Optional:** If you need to force a redeployment or explicitly pass the parameter file:
 ```bash
 azd up --force  # Force redeployment even if no changes detected
@@ -108,12 +118,8 @@ All deployment configuration is managed through the Bicep parameters file `infra
 Edit `infra/main.parameters.json` before running `azd up`. Key parameters you can customize:
 
 **Locations:**
-```json
-"hubLocation": { "value": "uksouth" },
-"spoke1Location": { "value": "westeurope" },
-"spoke2Location": { "value": "northeurope" },
-"workloadLocation": { "value": "uksouth" }
-```
+
+`hubLocation`, `spoke1Location`, and `workloadLocation` are bound to `AZURE_LOCATION` (the primary region you choose during `azd up`). `spoke2Location` is prompted separately — set it to a **different region** to demonstrate cross-region routing scenarios.
 
 **Feature Toggles:**
 ```json
