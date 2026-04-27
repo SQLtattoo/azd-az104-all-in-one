@@ -56,9 +56,9 @@ azd up
 
 > The separate `spoke2Location` prompt is intentional — deploying spoke2 in a different region is a core AZ-104 demo scenario (cross-region VNet peering, latency-based routing).
 
-**Optional:** If you need to force a redeployment or explicitly pass the parameter file:
+**Optional:** If you need to force a fresh redeployment ignoring stored state, or explicitly pass the parameter file:
 ```bash
-azd up --force  # Force redeployment even if no changes detected
+azd provision --no-state  # Force fresh deployment ignoring stored deployment state (Bicep only)
 
 # Or explicitly reference the parameter file:
 azd deploy --parameters @infra/main.parameters.json
