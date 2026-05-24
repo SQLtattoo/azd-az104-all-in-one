@@ -165,8 +165,31 @@ resource appServiceIPRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
   }
 }
 
+// WAF Policy for Application Gateway
+resource wafPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2023-11-01' = {
+  name: '${appGwName}-waf-policy'
+  location: location
+  properties: {
+    policySettings: {
+      requestBodyCheck: true
+      maxRequestBodySizeInKb: 128
+      fileUploadLimitInMb: 100
+      state: 'Enabled'
+      mode: 'Prevention'
+    }
+    managedRules: {
+      managedRuleSets: [
+        {
+          ruleSetType: 'OWASP'
+          ruleSetVersion: '3.2'
+        }
+      ]
+    }
+  }
+}
+
 // Application Gateway with App Service as backend
-resource appGateway 'Microsoft.Network/applicationGateways@2021-05-01' = {
+resource appGateway 'Microsoft.Network/applicationGateways@2023-11-01' = {
   name: appGwName
   location: location
   properties: {
@@ -174,6 +197,9 @@ resource appGateway 'Microsoft.Network/applicationGateways@2021-05-01' = {
       name: 'WAF_v2'
       tier: 'WAF_v2'
       capacity: 2
+    }
+    firewallPolicy: {
+      id: wafPolicy.id
     }
     gatewayIPConfigurations: [
       {
@@ -268,6 +294,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2021-05-01' = {
       {
         name: 'routing-rule-http'
         properties: {
+          priority: 100
           ruleType: 'Basic'
           httpListener: {
             id: resourceId('Microsoft.Network/applicationGateways/httpListeners', appGwName, 'http-listener')
@@ -281,12 +308,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2021-05-01' = {
         }
       }
     ]
-    webApplicationFirewallConfiguration: {
-      enabled: true
-      firewallMode: 'Prevention'
-      ruleSetType: 'OWASP'
-      ruleSetVersion: '3.1'
-    }
+
   }
 }
 
