@@ -11,6 +11,9 @@
     "deployKeyVault": {
       "value": true
     },
+    "deployMonitoring": {
+      "value": true
+    },
     "hubLocation":      { "value": "${AZURE_LOCATION}" },
     "spoke1Location":   { "value": "${AZURE_LOCATION}" },
     "workloadLocation": { "value": "${AZURE_LOCATION}" },

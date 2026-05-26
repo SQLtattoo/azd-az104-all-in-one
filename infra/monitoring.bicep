@@ -567,40 +567,34 @@ resource rsvDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if
   }
 }
 
-// Activity Log Alert — Backup job failure
-resource backupJobFailureAlert 'Microsoft.Insights/activityLogAlerts@2020-10-01' = if (deployMonitoring) {
+// Scheduled Query Alert — Backup job failure (queries AddonAzureBackupJobs logs in LAW)
+resource backupJobFailureAlert 'Microsoft.Insights/scheduledQueryRules@2022-06-15' = if (deployMonitoring) {
   name: 'alert-backup-job-failure'
-  location: 'global'
+  location: location
   tags: { environment: 'demo', projectName: 'az104' }
   properties: {
     description: 'Fires when a Recovery Services Vault backup job fails. Demo: trigger a failed backup to show alerting lifecycle.'
+    severity: 1
     enabled: true
-    scopes: [ resourceGroup().id ]
-    condition: {
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT15M'
+    scopes: [ law.id ]
+    criteria: {
       allOf: [
         {
-          // 'Administrative' covers ARM control-plane operations (backup job writes)
-          // 'ServiceHealth' is for Microsoft service incidents — wrong category here
-          field: 'category'
-          equals: 'Administrative'
-        }
-        {
-          field: 'operationName'
-          equals: 'Microsoft.RecoveryServices/vaults/backupJobs/write'
-        }
-        {
-          field: 'status'
-          equals: 'Failed'
+          query: 'AddonAzureBackupJobs | where JobStatus == "Failed"'
+          timeAggregation: 'Count'
+          operator: 'GreaterThan'
+          threshold: 0
+          failingPeriods: {
+            minFailingPeriodsToAlert: 1
+            numberOfEvaluationPeriods: 1
+          }
         }
       ]
     }
     actions: {
-      actionGroups: [
-        {
-          actionGroupId: actionGroup.id
-          webhookProperties: {}
-        }
-      ]
+      actionGroups: [ actionGroup.id ]
     }
   }
 }

@@ -37,6 +37,9 @@ param adminObjectId string = ''
 @description('Whether to enable Customer-Managed Keys for storage encryption')
 param enableCmkForStorage bool = false
 
+@description('Whether to deploy Monitoring (DCR, Connection Monitor, Alerts)')
+param deployMonitoring bool = true
+
 param publicDnsZoneBase  string = 'contoso.com'
 param privateDnsZoneBase string = 'contoso.local'
 param vaultName          string = 'contoso-rsv'
@@ -257,4 +260,29 @@ module governance 'governance.bicep' = {
       'Standard_B4ms'
     ]
   }
+}
+
+// Deploy monitoring (DCR, Connection Monitor, Alerts)
+module monitoring 'monitoring.bicep' = if (deployMonitoring) {
+  name: 'monitoring'
+  params: {
+    location:            hubLocation
+    deployMonitoring:    deployMonitoring
+    webVmLocation:       spoke1Location
+    appVmLocation:       spoke2Location
+    workloadVmLocation:  workloadLocation
+    webVmNames:          [ 'web1-vm', 'web2-vm' ]
+    appVmNames:          [ 'vm1' ]
+    workloadVmName:      'workload1-vm'
+    webLbName:           'web-lb'
+    workloadLbName:      'workload-lb'
+    appGwName:           'app-gateway'
+    vaultName:           vaultName
+  }
+  dependsOn: [
+    webTier
+    appTier
+    workloadTier
+    shared
+  ]
 }
